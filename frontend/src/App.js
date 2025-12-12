@@ -72,7 +72,8 @@ billTo: { name: '', address: '', city: '', mobile: '' },
     return sum + price * qty;
   }, 0);
   const cgstAmount = subtotal * 0.09;
-  const grandTotal = subtotal + cgstAmount;
+  const sgstAmount = subtotal * 0.09;
+  const grandTotal = subtotal + cgstAmount + sgstAmount;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -80,19 +81,23 @@ billTo: { name: '', address: '', city: '', mobile: '' },
       alert('Please select an invoice date.');
       return;
     }
+const payload = {
+  quotationDate: formData.quotationDate,
+  billTo: formData.billTo,
+  items: formData.items.map(item => ({
+    description: item.description,
+    price: parseFloat(item.price),
+    quantity: parseInt(item.quantity, 10)
+  })),
+  subtotal,
+  cgstAmount,
+  sgstAmount,   // ⭐ REQUIRED ⭐
+  grandTotal
+};
 
-    const payload = {
-      quotationDate: formData.quotationDate,
-      billTo: formData.billTo,
-      items: formData.items.map(item => ({
-        description: item.description,
-        price: parseFloat(item.price),
-        quantity: parseInt(item.quantity, 10)
-      })),
-      subtotal,
-      cgstAmount,
-      grandTotal
-    };
+
+console.log("PAYLOAD SENDING:", payload);   // 🔥 ADD THIS
+
 
     try {
       let response;
@@ -113,11 +118,12 @@ billTo: { name: '', address: '', city: '', mobile: '' },
       const result = await response.json();
       if (response.ok) {
         alert(editingId ? '✅ Quotation updated!' : '✅ Quotation saved!');
-        setFormData({
-          quotationDate: '',
-          billTo: { name: '', address: '', city: '' },
-          items: [{ description: '', price: '', quantity: '' }]
-        });
+       setFormData({
+  quotationDate: '',
+  billTo: { name: '', address: '', city: '', mobile: '' },
+  items: [{ description: '', price: '', quantity: '' }]
+});
+
         setEditingId(null);
         setActiveView('records');
         loadQuotations();
@@ -130,19 +136,25 @@ billTo: { name: '', address: '', city: '', mobile: '' },
     }
   };
 
-  const handleEdit = (quotation) => {
-    setEditingId(quotation._id);
-    setFormData({
-      quotationDate: quotation.quotationDate.split('T')[0],
-      billTo: quotation.billTo,
-      items: quotation.items.map(item => ({
-        description: item.description,
-        price: item.price.toString(),
-        quantity: item.quantity.toString()
-      }))
-    });
-    setActiveView('create');
-  };
+ const handleEdit = (quotation) => {
+  setEditingId(quotation._id);
+  setFormData({
+    quotationDate: quotation.quotationDate.split('T')[0],
+    billTo: {
+      name: quotation.billTo.name || '',
+      address: quotation.billTo.address || '',
+      city: quotation.billTo.city || '',
+      mobile: quotation.billTo.mobile || ''   // REQUIRED
+    },
+    items: quotation.items.map(item => ({
+      description: item.description,
+      price: item.price.toString(),
+      quantity: item.quantity.toString()
+    }))
+  });
+  setActiveView('create');                  
+};
+
 
   const handleDelete = async (id, quotationNumber) => {
     if (!window.confirm(`Delete Quotation ${quotationNumber}?`)) return;
@@ -197,14 +209,16 @@ billTo: { name: '', address: '', city: '', mobile: '' },
           <nav>
             <div
               onClick={() => {
-                setEditingId(null);
-                setFormData({
-                  quotationDate: '',
-                  billTo: { name: '', address: '', city: '' },
-                  items: [{ description: '', price: '', quantity: '' }]
-                });
-                setActiveView('create');
-              }}
+    setEditingId(null);
+    setFormData({
+        quotationDate: '',
+        billTo: { name: '', address: '', city: '', mobile: '' },  // ✅ FIXED
+        items: [{ description: '', price: '', quantity: '' }]
+    });
+
+    setActiveView('create');
+}}
+
               style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -283,6 +297,24 @@ billTo: { name: '', address: '', city: '', mobile: '' },
                     style={{ display: 'block', width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ced4da', marginBottom: '8px' }}
                     required
                   />
+                  <input
+                    type="text"
+                    name="billTo.mobile"
+                    value={formData.billTo.mobile}
+                    onChange={handleInputChange}
+                    placeholder="Mobile Number"
+                    style={{
+                      display: "block",
+                      width: "100%",
+                      padding: "8px",
+                      borderRadius: "4px",
+                      border: "1px solid #ced4da",
+                      marginBottom: "8px"   // change this
+                    }}
+                    required
+                  />
+
+
                   <input
                     type="text"
                     name="billTo.address"
@@ -386,6 +418,7 @@ billTo: { name: '', address: '', city: '', mobile: '' },
                   <div>
                     <div>Sub Total: ₹{subtotal.toFixed(2)}</div>
                     <div>CGST (9%): ₹{cgstAmount.toFixed(2)}</div>
+                    <div>SGST (9%): ₹{sgstAmount.toFixed(2)}</div>
                     <div style={{ fontWeight: 'bold' }}>Grand Total: ₹{grandTotal.toFixed(2)}</div>
                   </div>
                 </div>

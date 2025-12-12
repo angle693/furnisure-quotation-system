@@ -2,14 +2,20 @@
 import React from 'react';
 
 const QuotationPDFView = ({ quotation }) => {
+  // Debug: Log the quotation data
+  console.log('QuotationPDFView received quotation:', quotation);
+  console.log('billTo data:', quotation?.billTo);
+  console.log('mobile number:', quotation?.billTo?.mobile);
+
   const formatDate = (dateStr) => {
     const d = new Date(dateStr);
     return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
   };
 
-  const customerName = quotation.billTo.name || 'SHANTINATH AGENCY';
-  const city = quotation.billTo.city || 'BHARUCH';
-  const mobileNumber = quotation.billTo.mobile;
+  const customerName = quotation.billTo?.name || 'SHANTINATH AGENCY';
+  const city = quotation.billTo?.city || 'BHARUCH';
+  const mobileNumber = quotation.billTo?.mobile || '';
+  const address = quotation.billTo?.address || '';
   const gstNo = '24B0GPG5365H1ZZ';
 
   // Calculate SGST and CGST (both 9%)
@@ -116,7 +122,7 @@ const QuotationPDFView = ({ quotation }) => {
       <div style={{ marginBottom: '15px' }}>
         <div style={{ fontWeight: 'bold' }}>BILL TO,</div>
         <div><b>Customer Name: </b>{customerName}</div>
-        <div><b>Address: </b>{quotation.billTo.address || ''}</div>
+        <div><b>Address: </b>{address}</div>
         <div><b>City: </b>{city}</div>
         <div><b>Mobile No.: </b>{mobileNumber}</div>
       </div>
