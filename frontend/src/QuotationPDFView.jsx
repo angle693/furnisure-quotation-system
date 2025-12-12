@@ -248,7 +248,7 @@ const QuotationPDFView = ({ quotation }) => {
           <div style={{ marginTop: '30px', textAlign: 'right' }}>
             <div style={{ color: '#0066cc', fontWeight: 'bold' }}>FURNISURE</div>
             {/* Replaced text signature with image */}
-            <div style={{ textAlign: 'center', margin: '10px 0', marginLeft: '200px' }}>
+            {/* <div style={{ textAlign: 'center', margin: '10px 0', marginLeft: '200px' }}>
               <img 
                 src="/signature.png" 
                 alt="R.T. Gonani Signature" 
@@ -258,7 +258,7 @@ const QuotationPDFView = ({ quotation }) => {
                   display: 'inline-block',
                   border: 'none'
                 }} 
-              />
+              /> */}
             </div>
             <div style={{ color: '#0066cc' }}>Proprietor</div>
             <div style={{ marginTop: '10px' }}>Authorised Sign.</div>
