@@ -439,105 +439,62 @@ function App() {
                 }}>
                   <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                     <thead>
-                      <tr style={{ backgroundColor: '#f8f9fa', borderBottom: '1px solid #dee2e6' }}>
-                        <th style={{ textAlign: 'left', padding: '12px 15px', fontWeight: 'bold' }}>Quotation No.</th>
-                        <th style={{ textAlign: 'left', padding: '12px 15px', fontWeight: 'bold' }}>Customer Name</th>
-                        <th style={{ textAlign: 'left', padding: '12px 15px', fontWeight: 'bold' }}>Mobile Number</th>
-                        <th style={{ textAlign: 'left', padding: '12px 15px', fontWeight: 'bold' }}>Selected Brands</th>
-                        <th style={{ textAlign: 'left', padding: '12px 15px', fontWeight: 'bold' }}>Grand Total</th>
-                        <th style={{ textAlign: 'left', padding: '12px 15px', fontWeight: 'bold' }}>Date</th>
-                        <th style={{ textAlign: 'left', padding: '12px 15px', fontWeight: 'bold' }}>Actions</th>
-                      </tr>
-                    </thead>
+                    <tr style={{ backgroundColor: '#f8f9fa', borderBottom: '1px solid #dee2e6' }}>
+                      <th style={{ textAlign: 'left', padding: '12px 15px', fontWeight: 'bold' }}>Quotation No.</th>
+                      <th style={{ textAlign: 'left', padding: '12px 15px', fontWeight: 'bold' }}>Customer Name</th>
+                      <th style={{ textAlign: 'left', padding: '12px 15px', fontWeight: 'bold' }}>Mobile Number</th>
+                      <th style={{ textAlign: 'left', padding: '12px 15px', fontWeight: 'bold' }}>Grand Total</th>
+                      <th style={{ textAlign: 'left', padding: '12px 15px', fontWeight: 'bold' }}>Date</th>
+                      <th style={{ textAlign: 'left', padding: '12px 15px', fontWeight: 'bold' }}>Actions</th>
+                    </tr>
+                  </thead>
+
                     <tbody>
-                      {quotations.map((q) => (
-                        <tr key={q._id} style={{ borderBottom: '1px solid #dee2e6' }}>
-                          <td style={{ padding: '12px 15px' }}>
-                            <span style={{
-                              backgroundColor: '#ffe0b2',
-                              padding: '4px 8px',
-                              borderRadius: '12px',
-                              fontSize: '12px',
-                              fontWeight: 'bold'
-                            }}>
-                              #{q.quotationNumber.split('-')[0].replace('CE', '')}
-                            </span>
-                          </td>
-                          <td style={{ padding: '12px 15px' }}>{q.billTo.name}</td>
-                          <td style={{ padding: '12px 15px' }}>+91 1234567890</td>
-                          <td style={{ padding: '12px 15px' }}>
-                            <div style={{ display: 'flex', gap: '5px' }}>
-                              <span style={{
-                                backgroundColor: '#cce5ff',
-                                padding: '4px 8px',
-                                borderRadius: '4px',
-                                fontSize: '12px'
-                              }}>
-                                Duraflame
-                              </span>
-                              <span style={{
-                                backgroundColor: '#cce5ff',
-                                padding: '4px 8px',
-                                borderRadius: '4px',
-                                fontSize: '12px'
-                              }}>
-                                Nocte
-                              </span>
-                            </div>
-                          </td>
-                          <td style={{ padding: '12px 15px', color: '#28a745' }}>
-                            <div>Duraflame: ₹67,664</div>
-                            <div>Nocte: ₹93,392</div>
-                          </td>
-                          <td style={{ padding: '12px 15px' }}>
-                            {new Date(q.quotationDate).toLocaleDateString('en-GB')}
-                          </td>
-                          <td style={{ padding: '12px 15px' }}>
-                            <div style={{ display: 'flex', gap: '8px' }}>
-                              <button
-                                onClick={() => setSelectedQuotation(q)}
-                                style={{
-                                  padding: '4px 8px',
-                                  // backgroundColor: '#6c757d',
-                                  color: 'white',
-                                  border: 'none',
-                                  borderRadius: '4px',
-                                  cursor: 'pointer'
-                                }}
-                              >
-                                📥
-                              </button>
-                              <button
-                                onClick={() => handleEdit(q)}
-                                style={{
-                                  padding: '4px 8px',
-                                  // backgroundColor: '#007bff',
-                                  color: 'white',
-                                  border: 'none',
-                                  borderRadius: '4px',
-                                  cursor: 'pointer'
-                                }}
-                              >
-                                ✏️
-                              </button>
-                              <button
-                                onClick={() => handleDelete(q._id, q.quotationNumber)}
-                                style={{
-                                  padding: '4px 8px',
-                                  // backgroundColor: '#dc3545',
-                                  color: 'white',
-                                  border: 'none',
-                                  borderRadius: '4px',
-                                  cursor: 'pointer'
-                                }}
-                              >
-                                🗑️
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
+  {quotations.map((q) => (
+    <tr key={q._id} style={{ borderBottom: '1px solid #dee2e6' }}>
+      <td style={{ padding: '12px 15px' }}>
+        <span style={{
+          backgroundColor: '#ffe0b2',
+          padding: '4px 8px',
+          borderRadius: '12px',
+          fontSize: '12px',
+          fontWeight: 'bold'
+        }}>
+          #{q.quotationNumber.split('-')[0].replace('CE', '')}
+        </span>
+      </td>
+
+      <td style={{ padding: '12px 15px' }}>{q.billTo.name}</td>
+
+      <td style={{ padding: '12px 15px' }}>
+        {q.billTo.mobile || "N/A"}
+      </td>
+
+      <td style={{ padding: '12px 15px', color: '#28a745', fontWeight: 'bold' }}>
+        ₹{q.grandTotal?.toLocaleString()}
+      </td>
+
+      <td style={{ padding: '12px 15px' }}>
+        {new Date(q.quotationDate).toLocaleDateString('en-GB')}
+      </td>
+
+      <td style={{ padding: '12px 15px' }}>
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <button onClick={() => setSelectedQuotation(q)} style={{ padding: '4px 8px', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
+            📥
+          </button>
+          <button onClick={() => handleEdit(q)} style={{ padding: '4px 8px', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
+            ✏️
+          </button>
+          <button onClick={() => handleDelete(q._id, q.quotationNumber)} style={{ padding: '4px 8px', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
+            🗑️
+          </button>
+        </div>
+      </td>
+    </tr>
+  ))}
+</tbody>
+
                   </table>
                 </div>
               )}
