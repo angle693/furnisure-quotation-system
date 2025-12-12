@@ -36,7 +36,7 @@ function App() {
 
   const [formData, setFormData] = useState({
     quotationDate: '',
-    billTo: { name: '', address: '', city: '' },
+billTo: { name: '', address: '', city: '', mobile: '' },
     items: [{ description: '', price: '', quantity: '' }]
   });
 

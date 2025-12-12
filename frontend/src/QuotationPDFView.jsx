@@ -9,7 +9,7 @@ const QuotationPDFView = ({ quotation }) => {
 
   const customerName = quotation.billTo.name || 'SHANTINATH AGENCY';
   const city = quotation.billTo.city || 'BHARUCH';
-  const mobileNumber = quotation.billTo.mobile || '9909927738';
+  const mobileNumber = quotation.billTo.mobile;
   const gstNo = '24B0GPG5365H1ZZ';
 
   // Calculate SGST and CGST (both 9%)
@@ -68,7 +68,7 @@ const QuotationPDFView = ({ quotation }) => {
           <div style={{ borderBottom: '1px solid #000', width: '100%', marginBottom: '8px' }}></div>
           <div style={{ display: 'flex', alignItems: 'center' }}>
             {/* <span style={{ marginRight: '5px' }}>🏷️</span> */}
-            <span style={{ fontWeight: 'bold' }}>GST. </span>
+            <span style={{ fontWeight: 'bold' }}>GST. 24AAKFF2184J1ZB</span>
           </div>
         </div>
 
@@ -228,12 +228,12 @@ const QuotationPDFView = ({ quotation }) => {
         marginTop: '25px'
       }}>
         {/* Left: Terms & Conditions */}
-        <div style={{ width: '50%', paddingRight: '10px' }}>
-          <div style={{ fontWeight: 'bold' }}>Terms & Conditions</div>
-          <div>Please Include the Invoice Number in your Payment Notes</div>
-          <div style={{ fontWeight: 'bold', marginTop: '10px' }}>THANK YOU</div>
-          <div>FOR YOUR BUSINESS</div>
-        </div>
+        <div style={{ width: '50%', paddingRight: '10px', }}>
+  <div style={{ fontWeight: 'bold' }}>
+    Composition taxable person, not eligible to collect tax on supplies.
+  </div>
+</div>
+
 
         {/* Right: Payment Info */}
         <div style={{ width: '50%', paddingLeft: '10px' }}>
