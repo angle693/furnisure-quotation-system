@@ -13,12 +13,14 @@ const quotationSchema = new mongoose.Schema({
   billTo: {
     name: String,
     address: String,
-    city: String
+    city: String,
+    mobile: String
   },
   items: [itemSchema],
   subtotal: { type: Number, required: true },
   cgstPercent: { type: Number, default: 9 },
   cgstAmount: { type: Number, required: true },
+  sgstAmount: { type: Number, required: true },
   grandTotal: { type: Number, required: true },
   company: {
     name: { type: String, default: "Furnisure" },

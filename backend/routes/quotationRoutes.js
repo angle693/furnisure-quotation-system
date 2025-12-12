@@ -17,7 +17,10 @@ const getNextSequence = async (name) => {
 // POST /api/quotations — Create
 router.post('/', async (req, res) => {
   try {
-    const { quotationDate, billTo, items, subtotal, cgstAmount, grandTotal } = req.body;
+    console.log("BACKEND RECEIVED:", req.body); // 🔥 ADD THIS
+
+    const { quotationDate, billTo, items, subtotal, cgstAmount, sgstAmount, grandTotal } = req.body;
+
     if (!quotationDate || !items || !Array.isArray(items) || items.length === 0) {
       return res.status(400).json({ message: 'Missing required fields' });
     }
@@ -39,15 +42,23 @@ router.post('/', async (req, res) => {
     const sequenceStr = seq.toString().padStart(4, '0');
     const quotationNumber = `CE${sequenceStr}-${fySuffix}`;
 
-    const newQuotation = new Quotation({
-      quotationNumber,
-      quotationDate,
-      billTo,
-      items,
-      subtotal,
-      cgstAmount,
-      grandTotal
-    });
+const newQuotation = new Quotation({
+  quotationNumber,
+  quotationDate,
+  billTo: {
+    name: billTo.name,
+    address: billTo.address,
+    city: billTo.city,
+    mobile: billTo.mobile  // 🔥 THIS saves mobile
+  },
+  items,
+  subtotal,
+  cgstAmount,
+  sgstAmount,
+  grandTotal
+});
+
+
 
     await newQuotation.save();
     res.status(201).json(newQuotation);
@@ -72,16 +83,27 @@ router.get('/', async (req, res) => {
 router.put('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const { quotationDate, billTo, items, subtotal, cgstAmount, grandTotal } = req.body;
+    const { quotationDate, billTo, items, subtotal, cgstAmount, sgstAmount, grandTotal } = req.body;
 
-    const updated = await Quotation.findByIdAndUpdate(id, {
-      quotationDate,
-      billTo,
-      items,
-      subtotal,
-      cgstAmount,
-      grandTotal
-    }, { new: true });
+const updated = await Quotation.findByIdAndUpdate(
+  id,
+  {
+    quotationDate,
+    billTo: {
+      name: billTo.name,
+      address: billTo.address,
+      city: billTo.city,
+      mobile: billTo.mobile   // 🔥 REQUIRED FIX
+    },
+    items,
+    subtotal,
+    cgstAmount,
+    sgstAmount,
+    grandTotal
+  },
+  { new: true }
+);
+
 
     if (!updated) {
       return res.status(404).json({ message: 'Quotation not found' });
