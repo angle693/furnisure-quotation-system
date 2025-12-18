@@ -174,17 +174,32 @@ console.log("PAYLOAD SENDING:", payload);   // 🔥 ADD THIS
   };
 
   const generatePDF = async () => {
-    if (!selectedQuotation) return;
-    const input = document.getElementById('quotation-pdf');
-    const canvas = await html2canvas(input, { scale: 2, useCORS: true });
-    const imgData = canvas.toDataURL('image/png');
-    const pdf = new jsPDF('p', 'mm', 'a4');
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-    pdf.save(`Quotation_${selectedQuotation.quotationNumber}.pdf`);
-    setSelectedQuotation(null);
-  };
+  if (!selectedQuotation) return;
+
+  // ⏳ WAIT for React to finish rendering updated layout
+  await new Promise(resolve => setTimeout(resolve, 300));
+
+  const input = document.getElementById('quotation-pdf');
+
+  const canvas = await html2canvas(input, {
+    scale: 2,
+    useCORS: true,
+    backgroundColor: null,
+    removeContainer: true
+  });
+
+  const imgData = canvas.toDataURL('image/png');
+  const pdf = new jsPDF('p', 'mm', 'a4');
+
+  const pdfWidth = pdf.internal.pageSize.getWidth();
+  const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+  pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+  pdf.save(`Quotation_${selectedQuotation.quotationNumber}.pdf`);
+
+  setSelectedQuotation(null);
+};
+
 
   return (
     <div style={{ display: 'flex', height: '100vh', fontFamily: 'Arial, sans-serif', backgroundColor: '#f8f9fa' }}>
