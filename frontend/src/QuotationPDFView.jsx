@@ -2,10 +2,6 @@
 import React from 'react';
 
 const QuotationPDFView = ({ quotation }) => {
-  // Debug: Log the quotation data
-  console.log('QuotationPDFView received quotation:', quotation);
-  console.log('billTo data:', quotation?.billTo);
-  console.log('mobile number:', quotation?.billTo?.mobile);
 
   const formatDate = (dateStr) => {
     const d = new Date(dateStr);
@@ -16,9 +12,7 @@ const QuotationPDFView = ({ quotation }) => {
   const city = quotation.billTo?.city || 'BHARUCH';
   const mobileNumber = quotation.billTo?.mobile || '';
   const address = quotation.billTo?.address || '';
-  const gstNo = '24B0GPG5365H1ZZ';
 
-  // Calculate SGST and CGST (both 9%)
   const cgstAmount = quotation.cgstAmount || (quotation.subtotal * 0.09);
   const sgstAmount = quotation.sgstAmount || (quotation.subtotal * 0.09);
   const grandTotal = quotation.grandTotal || (quotation.subtotal + cgstAmount + sgstAmount);
@@ -32,235 +26,138 @@ const QuotationPDFView = ({ quotation }) => {
         fontSize: '12px',
         padding: '15px 20px',
         lineHeight: 1.3,
-        color: '#000',
+        color: '#6B3E26',
+        backgroundColor: '#FBF6ED',
         position: 'relative',
-        border: '1px solid #000',
+        border: '1px solid #5A3420',
         boxSizing: 'border-box'
       }}
     >
-      {/* Top Section: Logo + Contact Info */}
+
+      {/* Top Section */}
       <div style={{ display: 'flex', marginBottom: '10px' }}>
-        {/* Left: Logo */}
-        <div style={{ marginRight: '10px', flexShrink: 0 }}>
-          <img
-            src="/logo.png"
-            alt="Furnisure Logo"
-            style={{
-              height: '80px',
-              width: 'auto',
-              display: 'block'
-            }}
-          />
+        <div style={{ marginRight: '10px' }}>
+          <img src="/logo.png" alt="Furnisure Logo" style={{ height: '80px' }} />
         </div>
 
-        {/* Vertical Lines */}
-        <div style={{ width: '2px', backgroundColor: '#000', marginRight: '5px' }}></div>
-        <div style={{ width: '2px', backgroundColor: '#FFD700', marginRight: '10px' }}></div>
+        <div style={{ width: '2px', backgroundColor: '#5A3420', marginRight: '5px' }} />
+        <div style={{ width: '2px', backgroundColor: '#C9A24D', marginRight: '10px' }} />
 
-        {/* Right: Contact Info Icons */}
         <div style={{ flex: 1 }}>
-          <div style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
-            <span style={{ marginRight: '5px' }}>📞</span>
-            <span>9737888669</span>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
-            <span style={{ marginRight: '5px' }}>✉️</span>
-            <span>furnisure@gmail.com</span>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
-            <span style={{ marginRight: '5px' }}>📍</span>
-            <span>618,Shreeji Park Society, Hightention line road, Subhanpura, Vadodara-390021</span>
-          </div>
-          <div style={{ borderBottom: '1px solid #000', width: '100%', marginBottom: '8px' }}></div>
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            {/* <span style={{ marginRight: '5px' }}>🏷️</span> */}
-            <span style={{ fontWeight: 'bold' }}>GST. 24AAKFF2184J1ZB</span>
-          </div>
+          <div>📞 9737888669</div>
+          <div>✉️ furnisure@gmail.com</div>
+          <div>📍 618, Shreeji Park Society, Subhanpura, Vadodara-390021</div>
+          <div style={{ borderBottom: '1px solid #5A3420', margin: '6px 0' }} />
+          <b>GST. 24AAKFF2184J1ZB</b>
         </div>
 
-        {/* Invoice Header */}
-        <div style={{ textAlign: 'right', marginLeft: '20px' }}>
-          <div style={{ backgroundColor: '#000', color: 'white', padding: '8px 12px', fontWeight: 'bold', marginBottom: '12px' }}>
+        <div style={{ textAlign: 'right' }}>
+          <div style={{ backgroundColor: '#6B3E26', color: '#FBF6ED', padding: '6px 10px', fontWeight: 'bold' }}>
             INVOICE
           </div>
-          <div style={{ 
-            marginBottom: '10px', 
-            display: 'flex', 
-            justifyContent: 'space-between', 
-            alignItems: 'center',
-            borderBottom: '1px solid #000',
-            paddingBottom: '5px'
-          }}>
-            <div><strong>INVOICE NO.:</strong></div>
-            <div>{quotation.quotationNumber}</div>
+
+          <div style={{ borderBottom: '1px solid #5A3420', marginTop: '8px' }}>
+            <b>INVOICE NO:</b> {quotation.quotationNumber}
           </div>
-          <div style={{ 
-            marginBottom: '10px', 
-            display: 'flex', 
-            justifyContent: 'space-between', 
-            alignItems: 'center',
-            borderBottom: '1px solid #000',
-            paddingBottom: '5px'
-          }}>
-            <div><strong>INVOICE DATE:</strong></div>
-            <div>{formatDate(quotation.quotationDate)}</div>
+          <div style={{ borderBottom: '1px solid #5A3420' }}>
+            <b>INVOICE DATE:</b> {formatDate(quotation.quotationDate)}
           </div>
-          <div style={{ 
-            display: 'flex', 
-            justifyContent: 'space-between', 
-            alignItems: 'center',
-            borderBottom: '1px solid #000',
-            paddingBottom: '5px'
-          }}>
-            <div><strong>TOTAL DUE:</strong></div>
-            <div>₹{grandTotal.toFixed(2)}</div>
+          <div style={{ borderBottom: '1px solid #5A3420' }}>
+            <b>TOTAL DUE:</b> ₹{grandTotal.toFixed(2)}
           </div>
         </div>
       </div>
 
       {/* Bill To */}
       <div style={{ marginBottom: '15px' }}>
-        <div style={{ fontWeight: 'bold' }}>BILL TO,</div>
-        <div><b>Customer Name: </b>{customerName}</div>
-        <div><b>Address: </b>{address}</div>
-        <div><b>City: </b>{city}</div>
-        <div><b>Mobile No.: </b>{mobileNumber}</div>
+        <b>BILL TO,</b>
+        <div><b>Customer Name:</b> {customerName}</div>
+        <div><b>Address:</b> {address}</div>
+        <div><b>City:</b> {city}</div>
+        <div><b>Mobile No.:</b> {mobileNumber}</div>
       </div>
 
-      {/* Items Table with Full Borders */}
-      <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '15px', border: '1px solid #000' }}>
+      {/* Items Table */}
+      <table style={{ width: '100%', borderCollapse: 'collapse', border: '1px solid #5A3420' }}>
         <thead>
           <tr>
-            <th style={{
-              textAlign: 'left',
-              borderBottom: '1px solid #000',
-              padding: '5px',
-              borderRight: '1px solid #000',
-              fontWeight: 'bold'
-            }}>
-              DESCRIPTION
-            </th>
-            <th style={{
-              textAlign: 'right',
-              borderBottom: '1px solid #000',
-              padding: '5px',
-              borderRight: '1px solid #000',
-              fontWeight: 'bold'
-            }}>
-              PRICE
-            </th>
-            <th style={{
-              textAlign: 'right',
-              borderBottom: '1px solid #000',
-              padding: '5px',
-              borderRight: '1px solid #000',
-              fontWeight: 'bold'
-            }}>
-              QTY.
-            </th>
-            <th style={{
-              textAlign: 'right',
-              borderBottom: '1px solid #000',
-              padding: '5px',
-              fontWeight: 'bold'
-            }}>
-              TOTAL
-            </th>
+            {['DESCRIPTION', 'PRICE', 'QTY.', 'TOTAL'].map((h, i) => (
+              <th key={i} style={{
+                border: '1px solid #5A3420',
+                padding: '6px',
+                textAlign: i === 0 ? 'left' : 'right'
+              }}>
+                {h}
+              </th>
+            ))}
           </tr>
         </thead>
         <tbody>
           {quotation.items.map((item, i) => (
-            <tr key={i} style={{ borderTop: '1px solid #000', borderBottom: '1px solid #000' }}>
-              <td style={{
-                padding: '5px',
-                borderRight: '1px solid #000'
-              }}>
-                {item.description || 'A4 size Certificate Print & Framming'}
-              </td>
-              <td style={{
-                textAlign: 'right',
-                padding: '5px',
-                borderRight: '1px solid #000'
-              }}>
-                {parseFloat(item.price).toFixed(2) || '170.00'}
-              </td>
-              <td style={{
-                textAlign: 'right',
-                padding: '5px',
-                borderRight: '1px solid #000'
-              }}>
-                {item.quantity || '4'}
-              </td>
-              <td style={{
-                textAlign: 'right',
-                padding: '5px'
-              }}>
-                {(parseFloat(item.price) * parseInt(item.quantity)).toFixed(2) || '680.00'}
+            <tr key={i}>
+              <td style={{ border: '1px solid #5A3420', padding: '6px' }}>{item.description}</td>
+              <td style={{ border: '1px solid #5A3420', padding: '6px', textAlign: 'right' }}>{item.price.toFixed(2)}</td>
+              <td style={{ border: '1px solid #5A3420', padding: '6px', textAlign: 'right' }}>{item.quantity}</td>
+              <td style={{ border: '1px solid #5A3420', padding: '6px', textAlign: 'right' }}>
+                {(item.price * item.quantity).toFixed(2)}
               </td>
             </tr>
           ))}
         </tbody>
       </table>
 
-      {/* Totals - Right Aligned */}
-      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '20px' }}>
-        <table style={{ textAlign: 'right', fontSize: '12px' }}>
+      {/* Totals */}
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '15px' }}>
+        <table>
           <tbody>
-            <tr>
-              <td style={{ paddingRight: '30px' }}>Sub Total</td>
-              <td>₹{quotation.subtotal.toFixed(2) || '680.00'}</td>
-            </tr>
-            <tr>
-              <td style={{ paddingRight: '30px' }}>CGST (9%)</td>
-              <td>₹{cgstAmount.toFixed(2) || '61.20'}</td>
-            </tr>
-            <tr>
-              <td style={{ paddingRight: '30px' }}>SGST (9%)</td>
-              <td>₹{sgstAmount.toFixed(2) || '61.20'}</td>
-            </tr>
-            <tr>
-              <td style={{ paddingRight: '30px', fontWeight: 'bold' }}>Grand Total</td>
-              <td style={{ fontWeight: 'bold' }}>₹{grandTotal.toFixed(2) || '802.40'}</td>
-            </tr>
+            <tr><td>Sub Total</td><td>₹{quotation.subtotal.toFixed(2)}</td></tr>
+            <tr><td>CGST (9%)</td><td>₹{cgstAmount.toFixed(2)}</td></tr>
+            <tr><td>SGST (9%)</td><td>₹{sgstAmount.toFixed(2)}</td></tr>
+            <tr><td><b>Grand Total</b></td><td><b>₹{grandTotal.toFixed(2)}</b></td></tr>
           </tbody>
         </table>
       </div>
 
-      {/* Footer Section - Two Column Layout */}
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'space-between', 
-        fontSize: '11px',
-        marginTop: '25px'
-      }}>
-        {/* Left: Terms & Conditions */}
-        <div style={{ width: '50%', paddingRight: '10px', }}>
-  <div style={{ fontWeight: 'bold' }}>
-    Composition taxable person, not eligible to collect tax on supplies.
+      {/* Footer */}
+      {/* Footer Section */}
+<div style={{ 
+  display: 'flex', 
+  justifyContent: 'space-between', 
+  fontSize: '11px',
+  marginTop: '25px'
+}}>
+
+  {/* Left */}
+  <div style={{ width: '33%' }}>
+    <div style={{ fontWeight: 'bold' }}>
+      Composition taxable person, not eligible to collect tax on supplies.
+    </div>
   </div>
+
+  {/* CENTER – Payment Info (Moved Here ✅) */}
+  <div style={{ width: '33%' }}>
+    <div style={{ fontWeight: 'bold', marginBottom: '5px' }}>
+      Payment Info.
+    </div>
+    <div>A/C NAME : FURNISURE</div>
+    <div>A/C NUMBER :</div>
+    <div>IFSC CODE :</div>
+    <div>BANK :</div>
+    <div>BRANCH :</div>
+  </div>
+
+  {/* RIGHT – Signature */}
+  <div style={{ width: '33%', textAlign: 'right' }}>
+    <div style={{ marginTop: '40px' }}>
+      <div style={{ fontWeight: 'bold' }}>FURNISURE</div>
+      <div>Proprietor</div>
+      <div style={{ marginTop: '10px' }}>Authorised Sign.</div>
+    </div>
+  </div>
+
 </div>
 
 
-        {/* Right: Payment Info */}
-        <div style={{ width: '50%', paddingLeft: '10px' }}>
-          <div style={{ fontWeight: 'bold', marginBottom: '5px' }}>Payment Info.</div>
-          <div>A/C NAME : FURNISURE</div>
-          <div>A/C NUMBER : </div>
-          <div>IFSC CODE : </div>
-          <div>BANK : </div>
-          <div>BRANCH : </div>
-          
-          {/* Proprietor and Signature */}
-          <div style={{ marginTop: '30px', textAlign: 'right' }}>
-            <div style={{ color: '#0066cc', fontWeight: 'bold' }}>FURNISURE</div>
-            {/* Removed Signature Image */}
-<div style={{ margin: '20px 0', height: '40px' }}></div>
-
-            <div style={{ color: '#0066cc' }}>Proprietor</div>
-            <div style={{ marginTop: '10px' }}>Authorised Sign.</div>
-          </div>
-        </div>
-      </div>
     </div>
   );
 };
