@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import QuotationPDFView from './QuotationPDFView';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import './App.css';
 
 function App() {
   const [activeView, setActiveView] = useState('records');
@@ -10,6 +11,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [selectedQuotation, setSelectedQuotation] = useState(null);
   const [editingId, setEditingId] = useState(null); // null = create, string = edit
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     if (activeView === 'records') {
@@ -202,114 +204,84 @@ console.log("PAYLOAD SENDING:", payload);   // 🔥 ADD THIS
 
 
   return (
-    <div style={{ display: 'flex', height: '100vh', fontFamily: 'Arial, sans-serif', backgroundColor: '#f8f9fa' }}>
+    <div className="app-container">
       {/* Sidebar */}
-      <div style={{
-        width: '200px',
-        backgroundColor: '#fff',
-        borderRight: '1px solid #dee2e6',
-        padding: '20px 15px',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-between'
-      }}>
+      <div className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
         <div>
-          <div style={{ display: 'flex', alignItems: 'center', marginBottom: '30px' }}>
+          <div className="sidebar-header">
             {/* <img src="/logo.png" alt="Logo" style={{ height: '30px', marginRight: '10px' }} /> */}
-            <div>
-              <div style={{ fontWeight: 'bold', fontSize: '22px' }}>Furnisure</div>
-              {/* <div style={{ fontSize: '12px', color: '#6c757d' }}>Furnisure</div> */}
-            </div>
+            <div className="sidebar-logo">Furnisure</div>
           </div>
           <nav>
             <div
               onClick={() => {
-    setEditingId(null);
-    setFormData({
-        quotationDate: '',
-        billTo: { name: '', address: '', city: '', mobile: '' },  // ✅ FIXED
-        items: [{ description: '', price: '', quantity: '' }]
-    });
-
-    setActiveView('create');
-}}
-
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                padding: '10px 15px',
-                cursor: 'pointer',
-                borderRadius: '4px',
-                backgroundColor: activeView === 'create' ? '#ffe0b2' : 'transparent',
-                color: activeView === 'create' ? '#000' : '#495057',
-                marginBottom: '8px'
+                setEditingId(null);
+                setFormData({
+                  quotationDate: '',
+                  billTo: { name: '', address: '', city: '', mobile: '' },
+                  items: [{ description: '', price: '', quantity: '' }]
+                });
+                setActiveView('create');
+                setSidebarOpen(false);
               }}
+              className={`nav-item ${activeView === 'create' ? 'active' : 'inactive'}`}
             >
-              <span style={{ marginRight: '10px' }}>➕</span> Create Quotation
+              <span>➕</span> Create Quotation
             </div>
             <div
-              onClick={() => setActiveView('records')}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                padding: '10px 15px',
-                cursor: 'pointer',
-                borderRadius: '4px',
-                backgroundColor: activeView === 'records' ? '#ffe0b2' : 'transparent',
-                color: activeView === 'records' ? '#000' : '#495057'
+              onClick={() => {
+                setActiveView('records');
+                setSidebarOpen(false);
               }}
+              className={`nav-item ${activeView === 'records' ? 'active' : 'inactive'}`}
             >
-              <span style={{ marginRight: '10px' }}>📋</span> Quotation Records
+              <span>📋</span> Quotation Records
             </div>
           </nav>
         </div>
-        <div style={{ fontSize: '10px', color: '#6c757d', textAlign: 'center' }}>
+        <div className="sidebar-footer">
           © 2025 Furnisure
         </div>
       </div>
 
       {/* Main Content */}
-      <div style={{ flex: 1, overflowY: 'auto' }}>
-        <div style={{
-          backgroundColor: '#fff',
-          padding: '15px 20px',
-          borderBottom: '1px solid #dee2e6',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center'
-        }}>
-          <h2 style={{ margin: 0, fontSize: '20px' }}>Dashboard</h2>
-          <div style={{ fontSize: '14px', color: '#6c757d' }}>
+      <div className="main-content">
+        <div className="header">
+          <div className={`hamburger ${sidebarOpen ? 'hide' : ''}`} onClick={() => setSidebarOpen(true)}>
+            ☰
+          </div>
+          <h2>Dashboard</h2>
+          <div className="date">
             {new Date().toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
           </div>
         </div>
 
-        <div style={{ padding: '20px' }}>
+        <div className="content">
           {activeView === 'create' ? (
             <div>
               <h3>{editingId ? 'Edit Quotation' : 'Create New Quotation'}</h3>
-              <form onSubmit={handleSubmit} style={{ backgroundColor: '#fff', padding: '20px', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
-                <div style={{ marginBottom: '20px' }}>
-                  <label style={{ display: 'block', marginBottom: '5px' }}>Invoice Date:</label>
+              <form onSubmit={handleSubmit} className="form-container">
+                <div className="form-group">
+                  <label className="form-label">Invoice Date:</label>
                   <input
                     type="date"
                     name="quotationDate"
                     value={formData.quotationDate}
                     onChange={handleInputChange}
-                    style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ced4da' }}
+                    className="form-input"
                     required
                   />
                 </div>
 
-                <div style={{ marginBottom: '20px' }}>
-                  <h4>Bill To</h4>
+                <div className="form-group">
+                  <h4 className="form-section">Bill To</h4>
                   <input
                     type="text"
                     name="billTo.name"
                     value={formData.billTo.name}
                     onChange={handleInputChange}
                     placeholder="Customer Name"
-                    style={{ display: 'block', width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ced4da', marginBottom: '8px' }}
+                    className="form-input"
                     required
                   />
                   <input
@@ -318,25 +290,16 @@ console.log("PAYLOAD SENDING:", payload);   // 🔥 ADD THIS
                     value={formData.billTo.mobile}
                     onChange={handleInputChange}
                     placeholder="Mobile Number"
-                    style={{
-                      display: "block",
-                      width: "100%",
-                      padding: "8px",
-                      borderRadius: "4px",
-                      border: "1px solid #ced4da",
-                      marginBottom: "8px"   // change this
-                    }}
+                    className="form-input"
                     required
                   />
-
-
                   <input
                     type="text"
                     name="billTo.address"
                     value={formData.billTo.address}
                     onChange={handleInputChange}
                     placeholder="Address"
-                    style={{ display: 'block', width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ced4da', marginBottom: '8px' }}
+                    className="form-input"
                   />
                   <input
                     type="text"
@@ -344,92 +307,78 @@ console.log("PAYLOAD SENDING:", payload);   // 🔥 ADD THIS
                     value={formData.billTo.city}
                     onChange={handleInputChange}
                     placeholder="City"
-                    style={{ display: 'block', width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ced4da' }}
+                    className="form-input"
                   />
                 </div>
 
                 <h4>Items</h4>
-                <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '10px' }}>
-                  <thead>
-                    <tr>
-                      <th style={{ textAlign: 'left', borderBottom: '1px solid #dee2e6', padding: '8px' }}>Description</th>
-                      <th style={{ textAlign: 'right', borderBottom: '1px solid #dee2e6', padding: '8px' }}>Price</th>
-                      <th style={{ textAlign: 'right', borderBottom: '1px solid #dee2e6', padding: '8px' }}>Qty</th>
-                      <th style={{ width: '40px' }}></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {formData.items.map((item, index) => (
-                      <tr key={index}>
-                        <td>
-                          <input
-                            type="text"
-                            value={item.description}
-                            onChange={(e) => handleItemChange(index, 'description', e.target.value)}
-                            placeholder="e.g. A4 size Certificate Print & Framming"
-                            style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ced4da' }}
-                            required
-                          />
-                        </td>
-                        <td>
-                          <input
-                            type="number"
-                            step="0.01"
-                            value={item.price}
-                            onChange={(e) => handleItemChange(index, 'price', e.target.value)}
-                            style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ced4da', textAlign: 'right' }}
-                            required
-                          />
-                        </td>
-                        <td>
-                          <input
-                            type="number"
-                            min="1"
-                            value={item.quantity}
-                            onChange={(e) => handleItemChange(index, 'quantity', e.target.value)}
-                            style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ced4da', textAlign: 'right' }}
-                            required
-                          />
-                        </td>
-                        <td>
-                          <button
-                            type="button"
-                            onClick={() => removeItem(index)}
-                            style={{
-                              padding: '2px 6px',
-                              marginLeft: '4px',
-                              backgroundColor: '#dc3545',
-                              color: 'white',
-                              border: 'none',
-                              borderRadius: '4px',
-                              cursor: 'pointer'
-                            }}
-                            disabled={formData.items.length === 1}
-                          >
-                            –
-                          </button>
-                        </td>
+                <div className="table-responsive">
+                  <table className="table">
+                    <thead>
+                      <tr>
+                        <th>Description</th>
+                        <th>Price</th>
+                        <th>Qty</th>
+                        <th></th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {formData.items.map((item, index) => (
+                        <tr key={index}>
+                          <td>
+                            <input
+                              type="text"
+                              value={item.description}
+                              onChange={(e) => handleItemChange(index, 'description', e.target.value)}
+                              placeholder="e.g. A4 size Certificate Print & Framming"
+                              className="form-input"
+                              required
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="number"
+                              step="0.01"
+                              value={item.price}
+                              onChange={(e) => handleItemChange(index, 'price', e.target.value)}
+                              className="form-input"
+                              required
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="number"
+                              min="1"
+                              value={item.quantity}
+                              onChange={(e) => handleItemChange(index, 'quantity', e.target.value)}
+                              className="form-input"
+                              required
+                            />
+                          </td>
+                          <td>
+                            <button
+                              type="button"
+                              onClick={() => removeItem(index)}
+                              className="btn btn-danger btn-small"
+                              disabled={formData.items.length === 1}
+                            >
+                              –
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
                 <button
                   type="button"
                   onClick={addItem}
-                  style={{
-                    padding: '8px 16px',
-                    backgroundColor: '#28a745',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                    marginBottom: '20px'
-                  }}
+                  className="btn btn-success"
                 >
                   + Add Item
                 </button>
 
-                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '20px', marginBottom: '20px' }}>
+                <div className="totals">
                   <div>
                     <div>Sub Total: ₹{subtotal.toFixed(2)}</div>
                     <div>CGST (9%): ₹{cgstAmount.toFixed(2)}</div>
@@ -440,15 +389,7 @@ console.log("PAYLOAD SENDING:", payload);   // 🔥 ADD THIS
 
                 <button
                   type="submit"
-                  style={{
-                    padding: '10px 20px',
-                    backgroundColor: '#007bff',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                    fontSize: '1rem'
-                  }}
+                  className="btn btn-primary"
                 >
                   {editingId ? 'Update Quotation' : 'Save Quotation'}
                 </button>
@@ -456,20 +397,12 @@ console.log("PAYLOAD SENDING:", payload);   // 🔥 ADD THIS
             </div>
           ) : (
             <div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+              <div className="records-header">
                 <div>
                   <h3>Quotation Records</h3>
-                  <p style={{ color: '#6c757d', margin: 0 }}>Manage and track all your quotations</p>
+                  <p className="records-subtitle">Manage and track all your quotations</p>
                 </div>
-                <div style={{
-                  backgroundColor: '#fff',
-                  padding: '8px 16px',
-                  borderRadius: '20px',
-                  border: '1px solid #ffc107',
-                  fontSize: '14px',
-                  fontWeight: 'bold',
-                  color: '#ffc107'
-                }}>
+                <div className="records-count">
                   Total Quotations: {quotations.length}
                 </div>
               </div>
@@ -479,21 +412,16 @@ console.log("PAYLOAD SENDING:", payload);   // 🔥 ADD THIS
               ) : quotations.length === 0 ? (
                 <p>No quotations found. Create one first!</p>
               ) : (
-                <div style={{
-                  backgroundColor: '#fff',
-                  borderRadius: '8px',
-                  boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
-                  overflow: 'hidden'
-                }}>
-                  <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                <div className="records-table table-responsive">
+                  <table className="table">
                     <thead>
-                    <tr style={{ backgroundColor: '#f8f9fa', borderBottom: '1px solid #dee2e6' }}>
-                      <th style={{ textAlign: 'left', padding: '12px 15px', fontWeight: 'bold' }}>Quotation No.</th>
-                      <th style={{ textAlign: 'left', padding: '12px 15px', fontWeight: 'bold' }}>Customer Name</th>
-                      <th style={{ textAlign: 'left', padding: '12px 15px', fontWeight: 'bold' }}>Mobile Number</th>
-                      <th style={{ textAlign: 'left', padding: '12px 15px', fontWeight: 'bold' }}>Grand Total</th>
-                      <th style={{ textAlign: 'left', padding: '12px 15px', fontWeight: 'bold' }}>Date</th>
-                      <th style={{ textAlign: 'left', padding: '12px 15px', fontWeight: 'bold' }}>Actions</th>
+                    <tr>
+                      <th>Quotation No.</th>
+                      <th>Customer Name</th>
+                      <th>Mobile Number</th>
+                      <th>Grand Total</th>
+                      <th>Date</th>
+                      <th>Actions</th>
                     </tr>
                   </thead>
 
@@ -527,14 +455,14 @@ console.log("PAYLOAD SENDING:", payload);   // 🔥 ADD THIS
       </td>
 
       <td style={{ padding: '12px 15px' }}>
-        <div style={{ display: 'flex', gap: '8px' }}>
-          <button onClick={() => setSelectedQuotation(q)} style={{ padding: '4px 8px', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
+        <div className="action-buttons">
+          <button onClick={() => setSelectedQuotation(q)} className="btn btn-primary btn-small">
             📥
           </button>
-          <button onClick={() => handleEdit(q)} style={{ padding: '4px 8px', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
+          <button onClick={() => handleEdit(q)} className="btn btn-warning btn-small">
             ✏️
           </button>
-          <button onClick={() => handleDelete(q._id, q.quotationNumber)} style={{ padding: '4px 8px', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
+          <button onClick={() => handleDelete(q._id, q.quotationNumber)} className="btn btn-danger btn-small">
             🗑️
           </button>
         </div>
@@ -553,34 +481,14 @@ console.log("PAYLOAD SENDING:", payload);   // 🔥 ADD THIS
 
       {/* PDF Modal */}
       {selectedQuotation && (
-        <div
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            width: '100vw',
-            height: '100vh',
-            backgroundColor: 'rgba(0,0,0,0.5)',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            zIndex: 1000,
-            overflow: 'auto'
-          }}
-        >
-          <div style={{ backgroundColor: 'white', padding: '20px', maxWidth: '850px', margin: '20px' }}>
+        <div className="modal-overlay">
+          <div className="modal-content">
             <QuotationPDFView quotation={selectedQuotation} />
-            <div style={{ textAlign: 'center', marginTop: '20px' }}>
-              <button
-                onClick={generatePDF}
-                style={{ padding: '8px 16px', backgroundColor: '#28a745', color: 'white', border: 'none', marginRight: '10px' }}
-              >
+            <div className="modal-actions">
+              <button onClick={generatePDF} className="btn btn-success">
                 Download PDF
               </button>
-              <button
-                onClick={() => setSelectedQuotation(null)}
-                style={{ padding: '8px 16px', backgroundColor: '#6c757d', color: 'white', border: 'none' }}
-              >
+              <button onClick={() => setSelectedQuotation(null)} className="btn btn-secondary">
                 Cancel
               </button>
             </div>
