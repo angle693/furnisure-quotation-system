@@ -21,7 +21,8 @@ const QuotationPDFView = ({ quotation }) => {
     <div
       id="quotation-pdf"
       style={{
-        width: '800px',
+        width: '100%',
+        maxWidth: '800px',
         fontFamily: 'Arial, sans-serif',
         fontSize: '12px',
         padding: '15px 20px',
@@ -30,14 +31,15 @@ const QuotationPDFView = ({ quotation }) => {
         backgroundColor: '#FBF6ED',
         position: 'relative',
         border: '1px solid #5A3420',
-        boxSizing: 'border-box'
+        boxSizing: 'border-box',
+        margin: '0 auto'
       }}
     >
 
       {/* Top Section */}
       <div style={{ display: 'flex', marginBottom: '10px' }}>
         <div style={{ marginRight: '10px' }}>
-          <img src="/logo.png" alt="Furnisure Logo" style={{ height: '80px' }} />
+          <img src="/logo-Picsart-BackgroundRemover.png" alt="Furnisure Logo" style={{ height: '80px' }} />
         </div>
 
         <div style={{ width: '2px', backgroundColor: '#5A3420', marginRight: '5px' }} />
