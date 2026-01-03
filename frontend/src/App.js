@@ -38,7 +38,7 @@ function App() {
 
   const [formData, setFormData] = useState({
     quotationDate: '',
-billTo: { name: '', address: '', city: '', mobile: '' },
+    billTo: { name: '', address: '', city: '', mobile: '' },
     items: [{ description: '', price: '', quantity: '' }]
   });
 
@@ -73,9 +73,9 @@ billTo: { name: '', address: '', city: '', mobile: '' },
     const qty = parseFloat(item.quantity) || 0;
     return sum + price * qty;
   }, 0);
-  const cgstAmount = subtotal * 0.09;
-  const sgstAmount = subtotal * 0.09;
-  const grandTotal = subtotal + cgstAmount + sgstAmount;
+  const cgstAmount = 0;
+  const sgstAmount = 0;
+  const grandTotal = subtotal;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -83,22 +83,22 @@ billTo: { name: '', address: '', city: '', mobile: '' },
       alert('Please select an invoice date.');
       return;
     }
-const payload = {
-  quotationDate: formData.quotationDate,
-  billTo: formData.billTo,
-  items: formData.items.map(item => ({
-    description: item.description,
-    price: parseFloat(item.price),
-    quantity: parseInt(item.quantity, 10)
-  })),
-  subtotal,
-  cgstAmount,
-  sgstAmount,   // ⭐ REQUIRED ⭐
-  grandTotal
-};
+    const payload = {
+      quotationDate: formData.quotationDate,
+      billTo: formData.billTo,
+      items: formData.items.map(item => ({
+        description: item.description,
+        price: parseFloat(item.price),
+        quantity: parseInt(item.quantity, 10)
+      })),
+      subtotal,
+      cgstAmount,
+      sgstAmount,   // ⭐ REQUIRED ⭐
+      grandTotal
+    };
 
 
-console.log("PAYLOAD SENDING:", payload);   // 🔥 ADD THIS
+    console.log("PAYLOAD SENDING:", payload);   // 🔥 ADD THIS
 
 
     try {
@@ -120,11 +120,11 @@ console.log("PAYLOAD SENDING:", payload);   // 🔥 ADD THIS
       const result = await response.json();
       if (response.ok) {
         alert(editingId ? '✅ Quotation updated!' : '✅ Quotation saved!');
-       setFormData({
-  quotationDate: '',
-  billTo: { name: '', address: '', city: '', mobile: '' },
-  items: [{ description: '', price: '', quantity: '' }]
-});
+        setFormData({
+          quotationDate: '',
+          billTo: { name: '', address: '', city: '', mobile: '' },
+          items: [{ description: '', price: '', quantity: '' }]
+        });
 
         setEditingId(null);
         setActiveView('records');
@@ -138,24 +138,24 @@ console.log("PAYLOAD SENDING:", payload);   // 🔥 ADD THIS
     }
   };
 
- const handleEdit = (quotation) => {
-  setEditingId(quotation._id);
-  setFormData({
-    quotationDate: quotation.quotationDate.split('T')[0],
-    billTo: {
-      name: quotation.billTo.name || '',
-      address: quotation.billTo.address || '',
-      city: quotation.billTo.city || '',
-      mobile: quotation.billTo.mobile || ''   // REQUIRED
-    },
-    items: quotation.items.map(item => ({
-      description: item.description,
-      price: item.price.toString(),
-      quantity: item.quantity.toString()
-    }))
-  });
-  setActiveView('create');                  
-};
+  const handleEdit = (quotation) => {
+    setEditingId(quotation._id);
+    setFormData({
+      quotationDate: quotation.quotationDate.split('T')[0],
+      billTo: {
+        name: quotation.billTo.name || '',
+        address: quotation.billTo.address || '',
+        city: quotation.billTo.city || '',
+        mobile: quotation.billTo.mobile || ''   // REQUIRED
+      },
+      items: quotation.items.map(item => ({
+        description: item.description,
+        price: item.price.toString(),
+        quantity: item.quantity.toString()
+      }))
+    });
+    setActiveView('create');
+  };
 
 
   const handleDelete = async (id, quotationNumber) => {
@@ -176,31 +176,31 @@ console.log("PAYLOAD SENDING:", payload);   // 🔥 ADD THIS
   };
 
   const generatePDF = async () => {
-  if (!selectedQuotation) return;
+    if (!selectedQuotation) return;
 
-  // ⏳ WAIT for React to finish rendering updated layout
-  await new Promise(resolve => setTimeout(resolve, 300));
+    // ⏳ WAIT for React to finish rendering updated layout
+    await new Promise(resolve => setTimeout(resolve, 300));
 
-  const input = document.getElementById('quotation-pdf');
+    const input = document.getElementById('quotation-pdf');
 
-  const canvas = await html2canvas(input, {
-    scale: 2,
-    useCORS: true,
-    backgroundColor: null,
-    removeContainer: true
-  });
+    const canvas = await html2canvas(input, {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: null,
+      removeContainer: true
+    });
 
-  const imgData = canvas.toDataURL('image/png');
-  const pdf = new jsPDF('p', 'mm', 'a4');
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jsPDF('p', 'mm', 'a4');
 
-  const pdfWidth = pdf.internal.pageSize.getWidth();
-  const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
-  pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-  pdf.save(`Quotation_${selectedQuotation.quotationNumber}.pdf`);
+    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+    pdf.save(`Quotation_${selectedQuotation.quotationNumber}.pdf`);
 
-  setSelectedQuotation(null);
-};
+    setSelectedQuotation(null);
+  };
 
 
   return (
@@ -381,8 +381,6 @@ console.log("PAYLOAD SENDING:", payload);   // 🔥 ADD THIS
                 <div className="totals">
                   <div>
                     <div>Sub Total: ₹{subtotal.toFixed(2)}</div>
-                    <div>CGST (9%): ₹{cgstAmount.toFixed(2)}</div>
-                    <div>SGST (9%): ₹{sgstAmount.toFixed(2)}</div>
                     <div style={{ fontWeight: 'bold' }}>Grand Total: ₹{grandTotal.toFixed(2)}</div>
                   </div>
                 </div>
@@ -415,61 +413,61 @@ console.log("PAYLOAD SENDING:", payload);   // 🔥 ADD THIS
                 <div className="records-table table-responsive">
                   <table className="table">
                     <thead>
-                    <tr>
-                      <th>Quotation No.</th>
-                      <th>Customer Name</th>
-                      <th>Mobile Number</th>
-                      <th>Grand Total</th>
-                      <th>Date</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
+                      <tr>
+                        <th>Quotation No.</th>
+                        <th>Customer Name</th>
+                        <th>Mobile Number</th>
+                        <th>Grand Total</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
 
                     <tbody>
-  {quotations.map((q) => (
-    <tr key={q._id} style={{ borderBottom: '1px solid #dee2e6' }}>
-      <td style={{ padding: '12px 15px' }}>
-        <span style={{
-          backgroundColor: '#ffe0b2',
-          padding: '4px 8px',
-          borderRadius: '12px',
-          fontSize: '12px',
-          fontWeight: 'bold'
-        }}>
-          #{q.quotationNumber.split('-')[0].replace('CE', '')}
-        </span>
-      </td>
+                      {quotations.map((q) => (
+                        <tr key={q._id} style={{ borderBottom: '1px solid #dee2e6' }}>
+                          <td style={{ padding: '12px 15px' }}>
+                            <span style={{
+                              backgroundColor: '#ffe0b2',
+                              padding: '4px 8px',
+                              borderRadius: '12px',
+                              fontSize: '12px',
+                              fontWeight: 'bold'
+                            }}>
+                              #{q.quotationNumber.split('-')[0].replace('CE', '')}
+                            </span>
+                          </td>
 
-      <td style={{ padding: '12px 15px' }}>{q.billTo.name}</td>
+                          <td style={{ padding: '12px 15px' }}>{q.billTo.name}</td>
 
-      <td style={{ padding: '12px 15px' }}>
-        {q.billTo.mobile || "N/A"}
-      </td>
+                          <td style={{ padding: '12px 15px' }}>
+                            {q.billTo.mobile || "N/A"}
+                          </td>
 
-      <td style={{ padding: '12px 15px', color: '#28a745', fontWeight: 'bold' }}>
-        ₹{q.grandTotal?.toLocaleString()}
-      </td>
+                          <td style={{ padding: '12px 15px', color: '#28a745', fontWeight: 'bold' }}>
+                            ₹{q.grandTotal?.toLocaleString()}
+                          </td>
 
-      <td style={{ padding: '12px 15px' }}>
-        {new Date(q.quotationDate).toLocaleDateString('en-GB')}
-      </td>
+                          <td style={{ padding: '12px 15px' }}>
+                            {new Date(q.quotationDate).toLocaleDateString('en-GB')}
+                          </td>
 
-      <td style={{ padding: '12px 15px' }}>
-        <div className="action-buttons">
-          <button onClick={() => setSelectedQuotation(q)} className="btn btn-primary btn-small">
-            📥
-          </button>
-          <button onClick={() => handleEdit(q)} className="btn btn-warning btn-small">
-            ✏️
-          </button>
-          <button onClick={() => handleDelete(q._id, q.quotationNumber)} className="btn btn-danger btn-small">
-            🗑️
-          </button>
-        </div>
-      </td>
-    </tr>
-  ))}
-</tbody>
+                          <td style={{ padding: '12px 15px' }}>
+                            <div className="action-buttons">
+                              <button onClick={() => setSelectedQuotation(q)} className="btn btn-primary btn-small">
+                                📥
+                              </button>
+                              <button onClick={() => handleEdit(q)} className="btn btn-warning btn-small">
+                                ✏️
+                              </button>
+                              <button onClick={() => handleDelete(q._id, q.quotationNumber)} className="btn btn-danger btn-small">
+                                🗑️
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
 
                   </table>
                 </div>

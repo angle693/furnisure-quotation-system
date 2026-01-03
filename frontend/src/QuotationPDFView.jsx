@@ -13,9 +13,7 @@ const QuotationPDFView = ({ quotation }) => {
   const mobileNumber = quotation.billTo?.mobile || '';
   const address = quotation.billTo?.address || '';
 
-  const cgstAmount = quotation.cgstAmount || (quotation.subtotal * 0.09);
-  const sgstAmount = quotation.sgstAmount || (quotation.subtotal * 0.09);
-  const grandTotal = quotation.grandTotal || (quotation.subtotal + cgstAmount + sgstAmount);
+  const grandTotal = quotation.subtotal;
 
   return (
     <div
@@ -49,8 +47,6 @@ const QuotationPDFView = ({ quotation }) => {
           <div>📞 9737888669</div>
           <div>✉️ furnisure@gmail.com</div>
           <div>📍 618, Shreeji Park Society, Subhanpura, Vadodara-390021</div>
-          <div style={{ borderBottom: '1px solid #5A3420', margin: '6px 0' }} />
-          <b>GST. 24AAKFF2184J1ZB</b>
         </div>
 
         <div style={{ textAlign: 'right' }}>
@@ -112,9 +108,6 @@ const QuotationPDFView = ({ quotation }) => {
       <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '15px' }}>
         <table>
           <tbody>
-            <tr><td>Sub Total</td><td>₹{quotation.subtotal.toFixed(2)}</td></tr>
-            <tr><td>CGST (9%)</td><td>₹{cgstAmount.toFixed(2)}</td></tr>
-            <tr><td>SGST (9%)</td><td>₹{sgstAmount.toFixed(2)}</td></tr>
             <tr><td><b>Grand Total</b></td><td><b>₹{grandTotal.toFixed(2)}</b></td></tr>
           </tbody>
         </table>
@@ -122,42 +115,48 @@ const QuotationPDFView = ({ quotation }) => {
 
       {/* Footer */}
       {/* Footer Section */}
-<div style={{ 
-  display: 'flex', 
-  justifyContent: 'space-between', 
-  fontSize: '11px',
-  marginTop: '25px'
-}}>
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        fontSize: '11px',
+        marginTop: '25px',
+        gap: '50px'
+      }}>
 
-  {/* Left */}
-  <div style={{ width: '33%' }}>
-    <div style={{ fontWeight: 'bold' }}>
-      Composition taxable person, not eligible to collect tax on supplies.
-    </div>
-  </div>
+        {/* Left */}
+        <div style={{ flex: 1 }}>
+          <div style={{ fontWeight: 'bold', marginBottom: '5px' }}>
+            Terms and Conditions
+          </div>
+          <div>E & O.E</div>
+          <div>1. Goods once sold will not be taken back.</div>
+          <div>2. Interest @ 18% p.a. will be charged if the payment for SRB infotech is not made within the stipulated time.</div>
+          <div>3. Subject to 'Delhi' Jurisdiction only.</div>
+        </div>
 
-  {/* CENTER – Payment Info (Moved Here ✅) */}
-  <div style={{ width: '33%' }}>
-    <div style={{ fontWeight: 'bold', marginBottom: '5px' }}>
-      Payment Info.
-    </div>
-    <div>A/C NAME : FURNISURE</div>
-    <div>A/C NUMBER :</div>
-    <div>IFSC CODE :</div>
-    <div>BANK :</div>
-    <div>BRANCH :</div>
-  </div>
+        {/* CENTER – Payment Info (Moved Here ✅) */}
+        <div style={{ flex: 1 }}>
+          <div style={{ fontWeight: 'bold', marginBottom: '5px' }}>
+            Payment Info.
+          </div>
+          <div>A/C NAME : FURNISURE</div>
+          <div>A/C NUMBER :4150073488</div>
+          <div>IFSC CODE :KKBK0002760</div>
+          <div>BANK :Kotak Mahindra Bank</div>
+          <div>UPI ID :9737888669@ptaxis</div>
+        </div>
 
-  {/* RIGHT – Signature */}
-  <div style={{ width: '33%', textAlign: 'right' }}>
-    <div style={{ marginTop: '40px' }}>
-      <div style={{ fontWeight: 'bold' }}>FURNISURE</div>
-      <div>Proprietor</div>
-      <div style={{ marginTop: '10px' }}>Authorised Sign.</div>
-    </div>
-  </div>
+        {/* RIGHT – Signature */}
+        <div style={{ flex: 1, textAlign: 'right' }}>
+          <div style={{ marginTop: '40px' }}>
+            <div style={{ fontWeight: 'bold' }}>FURNISURE</div>
+            <img src="/SIGNATURE.png" alt="Signature" style={{ height: '50px', margin: '5px -20px 5px auto', display: 'block' }} />
+            <div>Proprietor</div>
+            <div style={{ marginTop: '10px' }}>Authorised Sign.</div>
+          </div>
+        </div>
 
-</div>
+      </div>
 
 
     </div>
