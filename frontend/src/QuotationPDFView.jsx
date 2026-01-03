@@ -1,5 +1,6 @@
 // frontend/src/QuotationPDFView.jsx
 import React from 'react';
+import './QuotationPDFView.css';
 
 const QuotationPDFView = ({ quotation }) => {
 
@@ -16,58 +17,44 @@ const QuotationPDFView = ({ quotation }) => {
   const grandTotal = quotation.subtotal;
 
   return (
-    <div
-      id="quotation-pdf"
-      style={{
-        width: '100%',
-        maxWidth: '800px',
-        fontFamily: 'Arial, sans-serif',
-        fontSize: '12px',
-        padding: '15px 20px',
-        lineHeight: 1.3,
-        color: '#6B3E26',
-        backgroundColor: '#FBF6ED',
-        position: 'relative',
-        border: '1px solid #5A3420',
-        boxSizing: 'border-box',
-        margin: '0 auto'
-      }}
-    >
+    <div id="quotation-pdf" className="quotation-pdf">
 
       {/* Top Section */}
-      <div style={{ display: 'flex', marginBottom: '10px' }}>
-        <div style={{ marginRight: '10px' }}>
-          <img src="/logo-Picsart-BackgroundRemover.png" alt="Furnisure Logo" style={{ height: '80px' }} />
+      <div className="quotation-header">
+        <div className="logo-section">
+          <img src="/logo-Picsart-BackgroundRemover.png" alt="Furnisure Logo" className="logo-img" />
         </div>
 
-        <div style={{ width: '2px', backgroundColor: '#5A3420', marginRight: '5px' }} />
-        <div style={{ width: '2px', backgroundColor: '#C9A24D', marginRight: '10px' }} />
+        <div className="header-dividers">
+          <div className="divider-brown" />
+          <div className="divider-gold" />
+        </div>
 
-        <div style={{ flex: 1 }}>
+        <div className="contact-info">
           <div>📞 9737888669</div>
           <div>✉️ furnisure@gmail.com</div>
           <div>📍 618, Shreeji Park Society, Subhanpura, Vadodara-390021</div>
         </div>
 
-        <div style={{ textAlign: 'right' }}>
-          <div style={{ backgroundColor: '#6B3E26', color: '#FBF6ED', padding: '6px 10px', fontWeight: 'bold' }}>
+        <div className="invoice-info">
+          <div className="invoice-badge">
             INVOICE
           </div>
 
-          <div style={{ borderBottom: '1px solid #5A3420', marginTop: '8px' }}>
+          <div className="invoice-detail">
             <b>INVOICE NO:</b> {quotation.quotationNumber}
           </div>
-          <div style={{ borderBottom: '1px solid #5A3420' }}>
+          <div className="invoice-detail">
             <b>INVOICE DATE:</b> {formatDate(quotation.quotationDate)}
           </div>
-          <div style={{ borderBottom: '1px solid #5A3420' }}>
+          <div className="invoice-detail">
             <b>TOTAL DUE:</b> ₹{grandTotal.toFixed(2)}
           </div>
         </div>
       </div>
 
       {/* Bill To */}
-      <div style={{ marginBottom: '15px' }}>
+      <div className="bill-to-section">
         <b>BILL TO,</b>
         <div><b>Customer Name:</b> {customerName}</div>
         <div><b>Address:</b> {address}</div>
@@ -76,36 +63,34 @@ const QuotationPDFView = ({ quotation }) => {
       </div>
 
       {/* Items Table */}
-      <table style={{ width: '100%', borderCollapse: 'collapse', border: '1px solid #5A3420' }}>
-        <thead>
-          <tr>
-            {['DESCRIPTION', 'PRICE', 'QTY.', 'TOTAL'].map((h, i) => (
-              <th key={i} style={{
-                border: '1px solid #5A3420',
-                padding: '6px',
-                textAlign: i === 0 ? 'left' : 'right'
-              }}>
-                {h}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {quotation.items.map((item, i) => (
-            <tr key={i}>
-              <td style={{ border: '1px solid #5A3420', padding: '6px' }}>{item.description}</td>
-              <td style={{ border: '1px solid #5A3420', padding: '6px', textAlign: 'right' }}>{item.price.toFixed(2)}</td>
-              <td style={{ border: '1px solid #5A3420', padding: '6px', textAlign: 'right' }}>{item.quantity}</td>
-              <td style={{ border: '1px solid #5A3420', padding: '6px', textAlign: 'right' }}>
-                {(item.price * item.quantity).toFixed(2)}
-              </td>
+      <div className="table-container">
+        <table className="items-table">
+          <thead>
+            <tr>
+              {['DESCRIPTION', 'PRICE', 'QTY.', 'TOTAL'].map((h, i) => (
+                <th key={i} className={i === 0 ? 'text-left' : 'text-right'}>
+                  {h}
+                </th>
+              ))}
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {quotation.items.map((item, i) => (
+              <tr key={i}>
+                <td className="text-left">{item.description}</td>
+                <td className="text-right">{item.price.toFixed(2)}</td>
+                <td className="text-right">{item.quantity}</td>
+                <td className="text-right">
+                  {(item.price * item.quantity).toFixed(2)}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
       {/* Totals */}
-      <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '15px' }}>
+      <div className="grand-total-section">
         <table>
           <tbody>
             <tr><td><b>Grand Total</b></td><td><b>₹{grandTotal.toFixed(2)}</b></td></tr>
@@ -113,19 +98,12 @@ const QuotationPDFView = ({ quotation }) => {
         </table>
       </div>
 
-      {/* Footer */}
       {/* Footer Section */}
-      <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        fontSize: '11px',
-        marginTop: '25px',
-        gap: '50px'
-      }}>
+      <div className="footer-section">
 
         {/* Left */}
-        <div style={{ flex: 1 }}>
-          <div style={{ fontWeight: 'bold', marginBottom: '5px' }}>
+        <div className="footer-column terms-column">
+          <div className="footer-title">
             Terms and Conditions
           </div>
           <div>E & O.E</div>
@@ -134,9 +112,9 @@ const QuotationPDFView = ({ quotation }) => {
           <div>3. Subject to 'Delhi' Jurisdiction only.</div>
         </div>
 
-        {/* CENTER – Payment Info (Moved Here ✅) */}
-        <div style={{ flex: 1 }}>
-          <div style={{ fontWeight: 'bold', marginBottom: '5px' }}>
+        {/* CENTER – Payment Info */}
+        <div className="footer-column payment-column">
+          <div className="footer-title">
             Payment Info.
           </div>
           <div>A/C NAME : FURNISURE</div>
@@ -147,12 +125,12 @@ const QuotationPDFView = ({ quotation }) => {
         </div>
 
         {/* RIGHT – Signature */}
-        <div style={{ flex: 1, textAlign: 'right' }}>
-          <div style={{ marginTop: '40px' }}>
-            <div style={{ fontWeight: 'bold' }}>FURNISURE</div>
-            <img src="/SIGNATURE.png" alt="Signature" style={{ height: '50px', margin: '5px -20px 5px auto', display: 'block' }} />
+        <div className="footer-column signature-column">
+          <div className="signature-content">
+            <div className="signature-company">FURNISURE</div>
+            <img src="/SIGNATURE.png" alt="Signature" className="signature-img" />
             <div>Proprietor</div>
-            <div style={{ marginTop: '10px' }}>Authorised Sign.</div>
+            <div className="auth-sign">Authorised Sign.</div>
           </div>
         </div>
 
